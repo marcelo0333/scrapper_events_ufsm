@@ -5,7 +5,7 @@ async function getEventLinks() {
     const eventLinks = [];
 
     for (let page = 1; page <= 1; page++) {
-        const url = `https://www.ufsm.br/busca?page=${page}&q&area=eventos`;
+        const url = `https://www.ufsm.br/busca?page=1&q&area=eventos`;
         const text = await axios.get(url).then(r => r.data);
         const $ = cheerio.load(text);
         
@@ -35,13 +35,25 @@ async function getEventData() {
             const tag = $(element).find('span.badge').text().trim();
             const campus = $(element).find('p.m-0').text().trim();
             const data = $(element).find('p.mb-0').text().trim();
+            const imgDesc = $(element).find('img').attr('src');
+            const desc = $(element).find('p').text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+            const contato = $(element).find('div:nth-child(2) > div.row.contato > div > div > p:nth-child(2)').text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+            const local = $(element).find(' div > div.row.localizacao > div > div').eq(0).text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+            const latitude = $(element).find('div:nth-child(2) > div.row.localizacao > div:nth-child(2) > div > div').attr('data-map-lat');
+            const longitude = $(element).find('div:nth-child(2) > div.row.localizacao > div:nth-child(2) > div > div').attr('data-map-lng');
 
             eventData.push({
                 img,
                 title,
                 tag,
                 campus,
-                data
+                data,
+                imgDesc,
+                desc,
+                contato,
+                local,
+                latitude,
+                longitude
             });
         });
     }
