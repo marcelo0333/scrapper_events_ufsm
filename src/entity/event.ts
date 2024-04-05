@@ -7,15 +7,17 @@ export class EventEntity{
     public eventId?: number;
 
     @Column({ unique: true, nullable: false, type: 'varchar'})
-    public eventName?: string;
+    public eventTitle?: string;
     @Column()
     public authorName?: string;
     @Column()
+    public campusName?: string;
+    @Column()
     public typeEvent?:string;
     @Column()
-    public description
+    public description?: string;
     @Column()
-    public imageEvent
+    public imageEvent?: string;
     @Column()
     public dateInitial?: Date;
     @Column()
