@@ -1,15 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
-import { EventEntity } from "../event";
-import { LocalEntity } from "../local";
-
-
-@Entity({name: 'events_to_local'})
-
-export class EventsToLocal{
-    @ManyToOne(()=>EventEntity,{onDelete: 'CASCADE'})
-    @JoinColumn({name: 'eventId'})
-    event?: EventEntity;
-
-    @ManyToOne(()=>LocalEntity,{onDelete: 'CASCADE'})
-    @JoinColumn({name: 'localId'})
-    local?: LocalEntity;}
+// import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+// import { Events } from "../Events";
+// import { Local } from "../Local";
+//
+// @Entity({name:'events_to_local'})
+// export class EventsToLocal {
+//     @PrimaryGeneratedColumn()
+//     public id?: number;
+//
+//     @ManyToOne(() => Events, (events) => events.eventId, { onDelete: 'CASCADE' })
+//     @JoinColumn({ name: 'eventId' })
+//     events: Events = new Events();
+//
+//     @ManyToOne(() => Local, (local) => local.localId,{ onDelete: 'CASCADE' })
+//     @JoinColumn({ name: 'localId' })
+//     locals: Local = new Local();
+// }

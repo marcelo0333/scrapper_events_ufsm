@@ -1,18 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+// import {EventsToLocal} from "./join/events_to_local";
 
 @Entity({name: 'local'})
 
 
-export class LocalEntity{
+export class Local{
 
     @PrimaryGeneratedColumn()
     public localId?: number;
-    @Column()
+    @Column({ unique: false, nullable: true, type: 'varchar'})
     public nameLocal?: string;
-    @Column()
-    public cep?:string;
-    @Column('decimal', { precision: 10, scale: 8 })
-    public latitude?: number;
-    @Column('decimal', { precision: 11, scale: 8 })
-    public longitude?: number;
+    @Column({ unique: false, nullable: true, type: 'varchar'})
+    public address?:string;
+    @Column({ unique: false, nullable: true, type: 'varchar'})
+    public city?:string;
+    @Column({ unique: false, nullable: true, type: 'varchar'})
+    public latitude?: string;
+    @Column({ unique: false, nullable: true, type: 'varchar'})
+    public longitude?: string;
+
 }

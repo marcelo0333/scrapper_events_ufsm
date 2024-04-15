@@ -2,9 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity({name: 'keyword'})
 
-export class KeywordEntity{
+export class Keywords{
     @PrimaryGeneratedColumn()
     public keywordId?: number;
-    @Column()
+    @Column({ unique: false, nullable: true, type: 'varchar'})
     public nameKeyword?: string;
 }
