@@ -10,7 +10,7 @@ import {EventsToKeyword} from "../entity/join/events_to_keyword";
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: "localhost",
-    port: 5432,
+    port: 5433,
     username: "postgres",
     password: "1234",
     database: "eventsDB",

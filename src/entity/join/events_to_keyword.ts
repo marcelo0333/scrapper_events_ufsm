@@ -8,10 +8,10 @@ export class EventsToKeyword{
     @PrimaryGeneratedColumn()
     id?: number;
     @ManyToOne(()=>Events,{onDelete: "CASCADE"})
-    @JoinColumn({name: 'eventId'})
+    @JoinColumn({name: 'event_id'})
     events?:Events;
 
     @ManyToOne(()=>Keywords,{onDelete: "CASCADE"})
-    @JoinColumn({name: 'keywordId'})
+    @JoinColumn({name: 'keyword_id'})
     keyword?:Keywords;
 }

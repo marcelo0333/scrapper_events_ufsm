@@ -6,9 +6,9 @@ import {Events_to_local} from "./join/events_to_local";
 
 export class Local{
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({name:'local_id'})
     public localId?: number;
-    @Column({ unique: false, nullable: true, type: 'varchar'})
+    @Column({ unique: false, nullable: true, type: 'varchar', name:'name_local'})
     public nameLocal?: string;
     @Column({ unique: false, nullable: true, type: 'varchar'})
     public address?:string;
