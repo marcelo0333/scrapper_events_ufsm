@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
-// import {EventsToLocal} from "./join/events_to_local";
+import {Events_to_local} from "./join/events_to_local";
 
 @Entity({name: 'local'})
 
@@ -18,5 +18,7 @@ export class Local{
     public latitude?: string;
     @Column({ unique: false, nullable: true, type: 'varchar'})
     public longitude?: string;
+    @OneToMany(()=>Events_to_local, (eventToLocal)=>eventToLocal.events)
+    eventToLocal: Events_to_local[]
 
 }

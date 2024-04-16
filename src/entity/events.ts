@@ -1,5 +1,6 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-// import {EventsToLocal} from "./join/events_to_local";
+import {Events_to_local} from "./join/events_to_local";
+import {EventsToKeyword} from "./join/events_to_keyword";
 
 @Entity({ name: 'events' })
 
@@ -21,5 +22,9 @@ export class Events{
     public imageEvent?:string;
     @Column({ unique: false, nullable: true, type: 'varchar'})
     public dateEvent?: string;
+    @OneToMany(() => Events_to_local, (eventToLocal)=>eventToLocal.events)
+    eventToLocal: Events_to_local[]
 
+    @OneToMany(() => EventsToKeyword, (eventToKeyword)=>eventToKeyword.events)
+    eventToKeyword: EventsToKeyword[]
 }

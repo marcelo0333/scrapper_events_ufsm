@@ -3,10 +3,10 @@ import * as cheerio from 'cheerio';
 import "reflect-metadata"
 import {Column, DataSource} from "typeorm"
 import { Events } from "../entity/events";
-import { Keywords } from "../entity/Keywords"
+import { Keywords } from "../entity/keywords"
 import { Local } from "../entity/local";
-// import { EventsToKeyword } from "../entity/join/events_to_keyword";
-// import { EventsToLocal } from "../entity/join/events_to_local";
+import { EventsToKeyword } from "../entity/join/events_to_keyword";
+import { Events_to_local } from "../entity/join/events_to_local";
 import {AppDataSource} from "../database/data-source";
 import {getEventLinks} from "./getEventLink";
 
@@ -15,8 +15,7 @@ export async function getEventData() {
     const eventLinks = await getEventLinks()
 
     const eventData = [];
-    const keywordsData=  [];
-    // const eventData = [];
+
     for (const url of eventLinks) {
         const text = await axios.get(url).then(r => r.data);
         const $ = cheerio.load(text);
@@ -41,42 +40,37 @@ export async function getEventData() {
     }
 
     for (const eventDataList of eventData) {
-        // Salvar os dados do evento
-        const event = new Events();
+        var event = new Events();
         event.description = eventDataList.description;
-
         event.imageEvent = eventDataList.imageEvent;
         event.eventName = eventDataList.eventName;
         event.dateEvent = eventDataList.dateEvent;
         event.contact = eventDataList.contact;
-
-        const savedEvent = AppDataSource.getRepository(Events)
-        await savedEvent.manager.save(event);
-
-        // Salvar os dados do local
-        const local = new Local();
+        var local = new Local();
         local.nameLocal = eventDataList.nameLocal;
         local.address = eventDataList.address;
         local.city = eventDataList.city;
         local.latitude = eventDataList.latitude;
         local.longitude = eventDataList.longitude;
-
+        var eventToLocal = new Events_to_local();
+        var eventToKeyword = new EventsToKeyword();
+        var keyword = new Keywords();
+        keyword.nameKeyword = eventDataList.nameKeyword;
+        const savedEvent = AppDataSource.getRepository(Events)
+        await savedEvent.manager.save(event);
         const savedLocal = AppDataSource.getRepository(Local)
         await savedLocal.manager.save(local);
-        // const eventToLocal = new EventsToLocal();
-        // eventToLocal.event = savedEvent; // Assign the saved event directly
-        // eventToLocal.local = savedLocal; // Assign the saved local directly
-        //
-        // await AppDataSource.getRepository(EventsToLocal).save(eventToLocal);
-
-        const keyword = new Keywords();
-        keyword.nameKeyword = eventDataList.nameKeyword;
-
         const savedKeyword = AppDataSource.getRepository(Keywords)
         await savedKeyword.manager.save(keyword);
 
-    }
+        eventToLocal.events = savedEvent.getId(event);
+        eventToLocal.local = savedLocal.getId(local);
+        await AppDataSource.getRepository(Events_to_local).save(eventToLocal);
+        eventToKeyword.events = savedEvent.getId(event);
+        eventToKeyword.keyword = savedKeyword.getId(keyword);
+        await AppDataSource.getRepository(EventsToKeyword).save(eventToKeyword)
+        console.log(eventData);
 
-    console.log(eventData);
+    }
 
 }
