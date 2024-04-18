@@ -6,7 +6,7 @@ import {EventsToKeyword} from "./join/events_to_keyword";
 export class Keywords{
     @PrimaryGeneratedColumn({name: 'keyword_id'})
     public keywordId?: number;
-    @Column({ unique: true, nullable: true, type: 'varchar'})
+    @Column({ unique: true, nullable: true, type: 'varchar', name:'name_keyword'})
     public nameKeyword?: string;
 
     @OneToMany(() => EventsToKeyword, (eventToKeyword)=>eventToKeyword.keyword)

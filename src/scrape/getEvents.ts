@@ -8,10 +8,10 @@ import { EventsToKeyword } from "../entity/join/events_to_keyword";
 import { Events_to_local } from "../entity/join/events_to_local";
 import {AppDataSource} from "../database/data-source";
 import {getEventLinks} from "./getEventLink";
-
+import {getNewEventsLink} from "./getNewEventsLink";
 
 export async function getEventData() {
-    const eventLinks = await getEventLinks()
+    const eventLinks = await getNewEventsLink()
 
     const eventData = [];
 
@@ -68,33 +68,43 @@ export async function getEventData() {
         local.city = eventDataList.city;
         local.latitude = eventDataList.latitude;
         local.longitude = eventDataList.longitude;
-        var eventToLocal = new Events_to_local();
-        var eventToKeyword = new EventsToKeyword();
         var keyword = new Keywords();
         keyword.nameKeyword = eventDataList.nameKeyword;
 
 
-        const savedEvent = AppDataSource.getRepository(Events)
-        const existEvent = await savedEvent.findOne({where: {link: event.link}})
+        const repoEvent = AppDataSource.getRepository(Events)
+        const existEvent = await repoEvent.findOne({where: {link: event.link}})
         if(existEvent){
-            await savedEvent.update(existEvent.eventId, event);
+            await repoEvent.update(existEvent.eventId, event);
         }else{
-            await savedEvent.manager.save(event);
+            await repoEvent.manager.save(event);
         }
-        const savedLocal = AppDataSource.getRepository(Local)
-        await savedLocal.manager.save(local);
-        const savedKeyword = AppDataSource.getRepository(Keywords);
-        const existKeyword = await savedKeyword.findOne({where:{nameKeyword: keyword.nameKeyword}});
-        if(existKeyword){
-            await  savedKeyword.update(existKeyword.keywordId, keyword);
+        const repoLocal = AppDataSource.getRepository(Local)
+        const existLocal = await repoLocal.findOne({where:{address: local.address}});
+        if (!existLocal){
+            local =  await repoLocal.manager.save(local);
         }else {
-            const saved = await savedKeyword.manager.save(keyword);
-            eventToKeyword.keyword.keywordId = saved.keywordId;
+            local = existLocal;
         }
 
-        eventToKeyword.events = savedEvent.getId(event);
-        eventToLocal.events = savedEvent.getId(event);
-        eventToLocal.local = savedLocal.getId(local);
+        const repoKeyword = AppDataSource.getRepository(Keywords);
+        const existKeyword = await repoKeyword.findOne({where:{nameKeyword: keyword.nameKeyword}});
+
+        if(!existKeyword){
+            keyword = await repoKeyword.manager.save(keyword);
+        } else {
+            keyword = existKeyword;
+        }
+
+        const eventToKeyword = {
+            keyword: keyword,
+            events: repoEvent.getId(event)
+        };
+
+        const eventToLocal={
+            events: repoEvent.getId(event),
+            local: local
+        }
         await AppDataSource.getRepository(Events_to_local).save(eventToLocal);
         await AppDataSource.getRepository(EventsToKeyword).save(eventToKeyword)
         console.log(eventData);
