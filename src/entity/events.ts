@@ -1,6 +1,6 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Events_to_local} from "./join/events_to_local";
-import {EventsToKeyword} from "./join/events_to_keyword";
+import {EventsToTypes} from "./join/events_to_types";
 
 @Entity({ name: 'events' })
 
@@ -27,6 +27,6 @@ export class Events{
     @OneToMany(() => Events_to_local, (eventToLocal)=>eventToLocal.events)
     eventToLocal: Events_to_local[]
 
-    @OneToMany(() => EventsToKeyword, (eventToKeyword)=>eventToKeyword.events)
-    eventToKeyword: EventsToKeyword[]
+    @OneToMany(() => EventsToTypes, (eventsToTypes)=>eventsToTypes.events)
+    eventsToTypes: EventsToTypes[]
 }

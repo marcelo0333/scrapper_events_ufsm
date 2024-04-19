@@ -1,11 +1,11 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Events } from "../entity/events";
-import { Keywords } from "../entity/keywords"
+import { Types } from "../entity/types"
 import { Local } from "../entity/local";
 import {getEventData} from "../scrape/getEvents";
 import {Events_to_local} from "../entity/join/events_to_local";
-import {EventsToKeyword} from "../entity/join/events_to_keyword";
+import {EventsToTypes} from "../entity/join/events_to_types";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: "eventsDB",
     synchronize: true,
     logging: true,
-    entities: [Events, Keywords, Local, Events_to_local, EventsToKeyword],
+    entities: [Events, Types, Local, Events_to_local, EventsToTypes],
     migrations: [],
     subscribers: [],
 })

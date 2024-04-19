@@ -11,5 +11,13 @@
     - `npm install pg --save`
   - Para a execução do projeto TS utilizando node, foi utilizado o executor tsx
     - `npm install --save-dev tsx`
-- Para a execução deste projeto é necessario o seguinte comando 
+- Para a execução deste projeto é necessario o seguinte comando
   - `tsx getEvents.ts`
+- Em SQL a consulta para o retorno de dos dados em demonstração em conjunto é a seguinte
+  - `SELECT e.event_name, te.name_types, l.address
+    FROM events e
+    INNER JOIN events_to_local el ON e.event_id = el.event_id
+    INNER JOIN local l ON l.local_id = el.local_id
+    INNER JOIN events_to_types et ON e.event_id = et.event_id
+    INNER JOIN type_events te ON te.types_id = et.type_id;
+    `

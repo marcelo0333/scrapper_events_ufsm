@@ -2,16 +2,16 @@ import axios from "axios";
 import * as cheerio from 'cheerio';
 import "reflect-metadata"
 import { Events } from "../entity/events";
-import { Keywords } from "../entity/keywords"
+import { Types } from "../entity/types"
 import { Local } from "../entity/local";
-import { EventsToKeyword } from "../entity/join/events_to_keyword";
+import { EventsToTypes } from "../entity/join/events_to_types";
 import { Events_to_local } from "../entity/join/events_to_local";
 import {AppDataSource} from "../database/data-source";
 import {getEventLinks} from "./getEventLink";
 import {getNewEventsLink} from "./getNewEventsLink";
 
 export async function getEventData() {
-    const eventLinks = await getNewEventsLink()
+    const eventLinks = await getEventLinks()
 
     const eventData = [];
 
@@ -24,7 +24,7 @@ export async function getEventData() {
                 imageEvent: $(element).find('img.w-100').attr('src'),
                 eventName: $(element).find('h1.entry-title').text().trim(),
                 link: '',
-                nameKeyword: $(element).find('span.badge').text().trim(),
+                nameTypes: $(element).find('span.badge').text().trim(),
                 dateEvent: $(element).find('p.mb-0').text().trim(),
                 imgDesc: $(element).find('img').attr('src'),
                 description: $(element).find('p').text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim(),
@@ -68,8 +68,8 @@ export async function getEventData() {
         local.city = eventDataList.city;
         local.latitude = eventDataList.latitude;
         local.longitude = eventDataList.longitude;
-        var keyword = new Keywords();
-        keyword.nameKeyword = eventDataList.nameKeyword;
+        var types = new Types();
+        types.nameTypes = eventDataList.nameTypes;
 
 
         const repoEvent = AppDataSource.getRepository(Events)
@@ -87,17 +87,17 @@ export async function getEventData() {
             local = existLocal;
         }
 
-        const repoKeyword = AppDataSource.getRepository(Keywords);
-        const existKeyword = await repoKeyword.findOne({where:{nameKeyword: keyword.nameKeyword}});
+        const repoTypes = AppDataSource.getRepository(Types);
+        const existTypes = await repoTypes.findOne({where:{nameTypes: types.nameTypes}});
 
-        if(!existKeyword){
-            keyword = await repoKeyword.manager.save(keyword);
+        if(!existTypes){
+            types = await repoTypes.manager.save(types);
         } else {
-            keyword = existKeyword;
+            types = existTypes;
         }
 
-        const eventToKeyword = {
-            keyword: keyword,
+        const eventToTypes = {
+            types: types,
             events: repoEvent.getId(event)
         };
 
@@ -106,7 +106,7 @@ export async function getEventData() {
             local: local
         }
         await AppDataSource.getRepository(Events_to_local).save(eventToLocal);
-        await AppDataSource.getRepository(EventsToKeyword).save(eventToKeyword)
+        await AppDataSource.getRepository(EventsToTypes).save(eventToTypes)
         console.log(eventData);
     }
 }

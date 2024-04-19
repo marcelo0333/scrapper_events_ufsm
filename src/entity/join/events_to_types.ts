@@ -1,17 +1,17 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Events } from "../events";
-import { Keywords} from "../keywords"
+import { Types} from "../types"
 
-@Entity({name:'events_to_keyword'})
+@Entity({name:'events_to_types'})
 
-export class EventsToKeyword{
+export class EventsToTypes {
     @PrimaryGeneratedColumn()
     id?: number;
     @ManyToOne(()=>Events,{onDelete: "CASCADE"})
     @JoinColumn({name: 'event_id'})
     events?:Events;
 
-    @ManyToOne(()=>Keywords,{onDelete: "CASCADE"})
-    @JoinColumn({name: 'keyword_id'})
-    keyword?:Keywords;
+    @ManyToOne(()=>Types,{onDelete: "CASCADE"})
+    @JoinColumn({name: 'types_id'})
+    types?:Types;
 }
