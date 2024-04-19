@@ -22,8 +22,10 @@ export class Events{
     public description?:string;
     @Column({ unique: false, nullable: true, type: 'varchar', name:'image_event'})
     public imageEvent?:string;
-    @Column({ unique: false, nullable: true, type: 'varchar', name:'date_event'})
-    public dateEvent?: string;
+    @Column({ unique: false, nullable: true, type: 'timestamp', name:'date_initial'})
+    public dateInitial?: Date;
+    @Column({ unique: false, nullable: true, type: 'timestamp', name:'date_final'})
+    public dateFinal?: Date;
     @OneToMany(() => Events_to_local, (eventToLocal)=>eventToLocal.events)
     eventToLocal: Events_to_local[]
 

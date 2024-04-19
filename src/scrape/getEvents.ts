@@ -11,7 +11,13 @@ import {getEventLinks} from "./getEventLink";
 import {getNewEventsLink} from "./getNewEventsLink";
 
 export async function getEventData() {
-    const eventLinks = await getEventLinks()
+
+    const eventLinks = await getNewEventsLink();
+
+    var oldLinks = await getEventLinks();
+    eventLinks.push(...oldLinks);
+    var newLinks = await getNewEventsLink();
+    eventLinks.push(...newLinks);
 
     const eventData = [];
 
@@ -20,12 +26,19 @@ export async function getEventData() {
         const $ = cheerio.load(text);
 
         $('#main-section > article > article').each((index, element) => {
+            var dateEvent = $(element).find('p.mb-0').text().trim();
+            var [dateInitial, dateFinal] = dateEvent.split(' - ').map(dateStr => {
+                var [day, month, yearTime] = dateStr.split('/');
+                var [year, time] = yearTime.split(' ');
+                return new Date(`${year}-${month}-${day}T${time}:00`);
+            });
             const eventDataList = {
                 imageEvent: $(element).find('img.w-100').attr('src'),
                 eventName: $(element).find('h1.entry-title').text().trim(),
                 link: '',
                 nameTypes: $(element).find('span.badge').text().trim(),
-                dateEvent: $(element).find('p.mb-0').text().trim(),
+                dateInitial: dateInitial,
+                dateFinal: dateFinal,
                 imgDesc: $(element).find('img').attr('src'),
                 description: $(element).find('p').text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim(),
                 contact:  '',
@@ -59,7 +72,8 @@ export async function getEventData() {
         event.link = eventDataList.link;
         event.imageEvent = eventDataList.imageEvent;
         event.eventName = eventDataList.eventName;
-        event.dateEvent = eventDataList.dateEvent;
+        event.dateInitial = eventDataList.dateInitial;
+        event.dateFinal = eventDataList.dateFinal
         event.contact = eventDataList.contact;
         event.centerName = eventDataList.centerName;
         var local = new Local();
