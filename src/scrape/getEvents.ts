@@ -29,7 +29,7 @@ export async function getEventData() {
                 imgDesc: $(element).find('img').attr('src'),
                 description: $(element).find('p').text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim(),
                 contact:  '',
-                nameLocal: $($(element).find('p.m-0').children()[0]).text().trim(),
+                nameLocal: $($(element).find('div > div.row.localizacao > div > div').children()[0]).text().trim(),
                 address: $($(element).find(' div > div.row.localizacao > div > div').children()[1]).text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim(),
                 city: $($(element).find(' div > div.row.localizacao > div > div').children()[2]).text().replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim(),
                 latitude: $(element).find('div:nth-child(2) > div.row.localizacao > div:nth-child(2) > div > div').attr('data-map-lat'),
